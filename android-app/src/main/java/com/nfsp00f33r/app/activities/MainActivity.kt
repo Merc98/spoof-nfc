@@ -9,6 +9,8 @@ import android.app.PendingIntent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -379,6 +381,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NfSp00fApp(hardwareStatus: HardwareDetectionService.HardwareStatus) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    var showInfoDialog by rememberSaveable { mutableStateOf(false) }
     
     // Set up auto-navigation callback for EMV card detection
     DisposableEffect(Unit) {
@@ -417,6 +420,15 @@ fun NfSp00fApp(hardwareStatus: HardwareDetectionService.HardwareStatus) {
                                 color = Color(0xFF4CAF50).copy(alpha = 0.7f)
                             )
                         }
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { showInfoDialog = true }) {
+                        Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = "Información de uso",
+                            tint = Color(0xFF4CAF50)
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black)
@@ -471,4 +483,62 @@ fun NfSp00fApp(hardwareStatus: HardwareDetectionService.HardwareStatus) {
             }
         }
     }
+
+    if (showInfoDialog) {
+        UsageInfoDialog(
+            onDismiss = { showInfoDialog = false }
+        )
+    }
+}
+
+@Composable
+private fun UsageInfoDialog(onDismiss: () -> Unit) {
+    val scrollState = rememberScrollState()
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Guía rápida de uso",
+                color = Color(0xFF4CAF50),
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 420.dp)
+                    .verticalScroll(scrollState),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text("1) Dashboard: revisa estado de hardware NFC/Bluetooth/USB y score general.")
+                Text("2) Read: acerca una tarjeta EMV para leer APDUs y metadatos de sesión.")
+                Text("3) Emulate: activa perfiles HCE para pruebas controladas de emulación.")
+                Text("4) Database: consulta y exporta perfiles/tarjetas guardadas.")
+                Text("5) Analysis: inspecciona logs, tendencias y hallazgos técnicos.")
+
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Ejemplo de flujo recomendado:", fontWeight = FontWeight.SemiBold)
+                Text("• Paso 1: Abre Dashboard y confirma que NFC esté habilitado.")
+                Text("• Paso 2: Ve a Read y acerca una tarjeta al teléfono.")
+                Text("• Paso 3: Revisa respuesta APDU y guarda el perfil.")
+                Text("• Paso 4: En Analysis valida anomalías y métricas.")
+
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Buenas prácticas:", fontWeight = FontWeight.SemiBold)
+                Text("• Usa tarjetas de laboratorio/autorizadas para pruebas.")
+                Text("• Mantén permisos activos de NFC/Bluetooth cuando uses PN532.")
+                Text("• No ejecutes pruebas en entornos productivos.")
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Entendido", color = Color(0xFF4CAF50))
+            }
+        },
+        containerColor = Color(0xFF101010),
+        textContentColor = Color(0xFFE0E0E0),
+        titleContentColor = Color(0xFF4CAF50)
+    )
 }
