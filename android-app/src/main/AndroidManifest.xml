@@ -25,7 +25,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <!-- USB permissions for PN532 direct USB connection -->
-    <uses-permission android:name="android.permission.USB_PERMISSION" />
     <uses-feature
         android:name="android.hardware.usb.host"
         android:required="false" />
@@ -33,10 +32,6 @@
     <!-- Internet for logging and updates -->
     <uses-permission android:name="android.permission.INTERNET" />
     
-    <!-- Storage for card database and backup -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <!-- Wake lock to prevent sleep during card operations -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     
@@ -150,16 +145,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
-        <!-- Debug Command Receiver - AI Agent Interface (Debug builds only) -->
-        <receiver
-            android:name=".debug.DebugCommandReceiver"
-            android:exported="true"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="com.nfsp00f33r.app.DEBUG_COMMAND" />
-            </intent-filter>
-        </receiver>
 
     </application>
 
