@@ -32,6 +32,14 @@
     <!-- Internet for logging and updates -->
     <uses-permission android:name="android.permission.INTERNET" />
     
+    <!-- Storage for card database and backup -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
     <!-- Wake lock to prevent sleep during card operations -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     
